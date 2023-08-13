@@ -1,7 +1,7 @@
-import { Router } from 'express';
+//import { Router } from 'express';
 import { createClient } from '@supabase/supabase-js';
 
-const router = Router();
+//const router = Router();
 
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyamhtamRybm1jcmRraXl0cGJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTEyNjI0NzksImV4cCI6MjAwNjgzODQ3OX0.9gqfRHYiXG8h7L2A_ilTN3E0FMPjtd5dBgJ3q07AA1Q';
 const SUPABASE_URL = 'https://brjhmjdrnmcrdkiytpbg.supabase.co';
@@ -137,14 +137,14 @@ async function setOldSellPrice() {
     }
 }
 //setOldSellPrice();
-async function selectRange(greater, less) {
+export async function selectRange(greater, less) {
     let { data: steam, error } = await supabase
         .from('steam')
         .select('name, sell_price, buy_price')
         .gte('sell_price', greater) //заменить на buy_price
         .lt('sell_price', less); //заменить на buy_price
-    console.log(steam);
+    //console.log(steam);
+    return steam;
 }
-//selectRange(20, 30);  
 
 //export default router;

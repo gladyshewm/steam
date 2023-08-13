@@ -1,6 +1,6 @@
 import express from 'express';
 //import router from './functions.js';
-import { getNames } from './functions.js';
+import { getNames, selectRange } from './functions.js';
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -15,7 +15,10 @@ app.listen(PORT, () => {
 });
 
 app.get('/', async (req, res) => {
-    const names = await getNames();
+    const greater = parseFloat(req.query.greater) || 0;
+    const less = parseFloat(req.query.less) || 100;
+
+    const names = await selectRange(greater, less);
     res.render('user', { names });
 });
 
