@@ -28,6 +28,17 @@ async function getNames() { //не используется
     };
 }
 
+async function updateDate(name) {
+    let last_check = new Date();
+
+    const { data, error } = await supabase
+        .from('steam')
+        .update({ 'last_check': last_check })
+        .eq('name', name)
+        .select();
+    return last_check;
+}
+
 async function setPrices(sell_price, buy_price, name) {
     const { data, error } = await supabase
         .from('steam')
@@ -35,6 +46,8 @@ async function setPrices(sell_price, buy_price, name) {
         .eq('name', name)
         .select();
     console.log(name + ". Sell price: " + sell_price + ". Buy price: " + buy_price);
+    let updatedDate = await updateDate(name);
+    return updatedDate;
 }
 
 async function concatenate(url) {
@@ -63,16 +76,10 @@ async function getPrices(name) {
         console.log("sell price: " + sell_price);
 
         //let name = (await getNames()).name;
-        await setPrices(sell_price, buy_price, name); //name вида "'Blueberries' Buckshot | NSWC SEAL"
+        let updatedDate = await setPrices(sell_price, buy_price, name); //name вида "'Blueberries' Buckshot | NSWC SEAL"
         //console.log(result);
+        return { sell_price, buy_price, updatedDate };
 
-        let last_check = new Date();
-
-        const { data, error } = await supabase
-            .from('steam')
-            .update({ 'last_check': last_check })
-            .eq('name', name)
-            .select();
     } catch (error) {
         console.error(error);
     }
@@ -126,16 +133,19 @@ export async function selectRange(greater, less) {
         .lt('sell_price', less); //заменить на buy_price
     //console.log(steam);
     let now = new Date();
-    
+
     const oneDay = 7 * 24 * 60 * 60 * 1000; //Количество миллисекунд в одном дне
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 3; i++) {
         const lastCheckDate = new Date(steam[i].last_check);
         if ((now - lastCheckDate) >= oneDay) {
             console.log("Прошёл день с момента проверки цены. Обновление цены " + JSON.stringify(steam[i].name));
-            await getPrices(steam[i].name);
+            let updatedPrices = await getPrices(steam[i].name);
+            steam[i].buy_price = updatedPrices.buy_price;
+            steam[i].sell_price = updatedPrices.sell_price;
+            steam[i].last_check = updatedPrices.updatedDate;
         } else {
-            console.log("Цена актуальная " + (now - lastCheckDate) + ((now - lastCheckDate) >= oneDay));  
+            console.log("Цена актуальная " + (now - lastCheckDate) + ((now - lastCheckDate) >= oneDay));
         }
     }
     return steam;
