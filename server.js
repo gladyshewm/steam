@@ -1,6 +1,6 @@
 import express from 'express';
 //import router from './functions.js';
-import { getNames, selectRange } from './functions.js';
+import { selectRange } from './functions.js';
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -28,6 +28,14 @@ app.get('/', async (req, res) => {
         console.log('Names:', names);
     } catch (error) {
         console.error('Error calling getNames:', error);
+    }
+})(); */
+
+/* (async () => {
+    try {
+        const prices = await getPrices();
+    } catch (error) {
+        console.error('Error calling getPrices:', error);
     }
 })(); */
 

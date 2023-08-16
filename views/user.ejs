@@ -20,7 +20,8 @@
     <ul>
         <% names.forEach((el)=> { %>
             <li>
-                <b>Название: </b><%= el.name %>, <b>Sell price: </b><%= el.sell_price %>
+                <b>Название: </b><%= el.name %><br><b>Buy price: </b><%= el.buy_price %><br>
+                <b>Sell price: </b><%= el.sell_price %><br><b>Last Check: </b><%= el.last_check %>
             </li>
             <%}) %>
     </ul>
