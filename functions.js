@@ -15,19 +15,6 @@ const options = {
     }
 };
 
-async function getNames() { //не используется
-    let { data: steam, error } = await supabase
-        .from('steam')
-        .select('name');
-    //console.log(encodeURIComponent(steam?.[0]?.name));
-    let name = steam?.[35]?.name;
-    let encoded_name = encodeURIComponent(steam?.[35]?.name);
-    return {
-        name: name,
-        encoded_name: encoded_name,
-    };
-}
-
 async function updateDate(name) {
     let last_check = new Date();
 
@@ -50,16 +37,10 @@ async function setPrices(sell_price, buy_price, name) {
     return updatedDate;
 }
 
-async function concatenate(url) {
-    let result = (await getNames()).encoded_name;
-    url += result;
-    console.log(url);
-    return url;
-}
-
 async function getPrices(name) {
-    let com_url = 'https://steam-market-and-store.p.rapidapi.com/get_orders_hist/730---';
-    let url = await concatenate(com_url);
+    let encoded_name = encodeURIComponent(name);
+    let url = 'https://steam-market-and-store.p.rapidapi.com/get_orders_hist/730---' + encoded_name;
+    console.log(url);
 
     try {
         const response = await fetch(url, options);
@@ -136,7 +117,7 @@ export async function selectRange(greater, less) {
 
     const oneDay = 7 * 24 * 60 * 60 * 1000; //Количество миллисекунд в одном дне
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
         const lastCheckDate = new Date(steam[i].last_check);
         if ((now - lastCheckDate) >= oneDay) {
             console.log("Прошёл день с момента проверки цены. Обновление цены " + JSON.stringify(steam[i].name));
